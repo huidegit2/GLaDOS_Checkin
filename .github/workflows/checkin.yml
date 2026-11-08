@@ -34,7 +34,7 @@ jobs:
           MAIL_PROVIDER: ${{ secrets.MAIL_PROVIDER }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
-          # 收件人：统一由 mailer.py 在「钉钉通知」步骤发送；
+          # 收件人：统一由 mailer.py 在「邮件通知」步骤发送；
           # 禁用上游自带邮件，避免缺 MAIL_PASS 时被判定为账号失败(exit 1)
           # 额外通知渠道（可选，用法见 NOTIFY.md）
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
@@ -45,22 +45,17 @@ jobs:
           GLADOS_USER_AGENT: ${{ secrets.GLADOS_USER_AGENT }}
           # 通知测试模式：TEST secret 存在（非空）时只测通知渠道，不执行签到
           TEST: ${{ secrets.TEST }}
-          # 钉钉机器人（加签）
-          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
-          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
         run: |
           set -o pipefail
           python GLaDOS_Checkin.py 2>&1 | tee checkin_result.log
 
-      - name: 钉钉通知
+      - name: 邮件通知
         if: always()
         env:
-          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
-          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
           MAIL_AUTH: ${{ secrets.MAIL_AUTH }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
           CHECKIN_STATUS: ${{ job.status }}
-        run: python dingtalk_notify.py
+        run: python notify.py
 
   keepalive:
     runs-on: ubuntu-latest
