@@ -48,6 +48,8 @@ jobs:
           # 钉钉机器人（加签）
           DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
           DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+          MAIL_AUTH: ${{ secrets.MAIL_AUTH }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
         run: |
           set -o pipefail
           python GLaDOS_Checkin.py 2>&1 | tee checkin_result.log
@@ -57,6 +59,8 @@ jobs:
         env:
           DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
           DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+          MAIL_AUTH: ${{ secrets.MAIL_AUTH }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
           CHECKIN_STATUS: ${{ job.status }}
         run: python dingtalk_notify.py
 
