@@ -62,6 +62,9 @@ jobs:
 
   keepalive:
     runs-on: ubuntu-latest
+    # fork 中 GITHUB_TOKEN 默认只读，需显式授权才能推送 keepalive.txt
+    permissions:
+      contents: write
     needs: checkin   # 可选：等签到完成后再执行保活，避免任务失败
     # 签到/发信失败时也照常保活，避免仓库被判定为不活跃
     if: always()
