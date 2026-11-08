@@ -45,7 +45,20 @@ jobs:
           GLADOS_USER_AGENT: ${{ secrets.GLADOS_USER_AGENT }}
           # 通知测试模式：TEST secret 存在（非空）时只测通知渠道，不执行签到
           TEST: ${{ secrets.TEST }}
-        run: python GLaDOS_Checkin.py
+          # 钉钉机器人（加签）
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
+          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+        run: |
+          set -o pipefail
+          python GLaDOS_Checkin.py 2>&1 | tee checkin_result.log
+
+      - name: 钉钉通知
+        if: always()
+        env:
+          DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK }}
+          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+          CHECKIN_STATUS: ${{ job.status }}
+        run: python dingtalk_notify.py
 
   keepalive:
     runs-on: ubuntu-latest
